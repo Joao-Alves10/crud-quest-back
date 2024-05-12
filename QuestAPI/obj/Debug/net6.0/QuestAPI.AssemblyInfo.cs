@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QuestAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+700502b2b2203cfe0de99f5d2e264acf7b89b465")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8f739835b6b0ec40e3bbbb48f5c5ecfdd7ec158f")]
 [assembly: System.Reflection.AssemblyProductAttribute("QuestAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QuestAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
