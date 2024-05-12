@@ -44,8 +44,7 @@ namespace QuestAPI.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DescPergunta = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TemaPerguntaId = table.Column<long>(type: "bigint", nullable: true),
-                    TemaId = table.Column<long>(type: "bigint", nullable: false),
+                    TemaId = table.Column<long>(type: "bigint", nullable: true),
                     AlternativaId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -61,8 +60,7 @@ namespace QuestAPI.Migrations
                         name: "FK_Pergunta_Tema_TemaId",
                         column: x => x.TemaId,
                         principalTable: "Tema",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

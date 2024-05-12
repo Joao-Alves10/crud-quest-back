@@ -10,7 +10,7 @@ namespace QuestAPI.Entities
         public string DescPergunta { get; set; }
 
         [ForeignKey("TemaPergunta")]
-        public  long? TemaPerguntaId { get; set; }
+        public  long? TemaId { get; set; }
         public virtual Tema Tema { get; set; }
 
         [ForeignKey("Alternativa")]

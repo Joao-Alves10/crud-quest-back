@@ -12,7 +12,7 @@ using QuestAPI.Contexts;
 namespace QuestAPI.Migrations
 {
     [DbContext(typeof(QuestContext))]
-    [Migration("20240512002631_CriacaoTabelasQuest")]
+    [Migration("20240512014143_CriacaoTabelasQuest")]
     partial class CriacaoTabelasQuest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,10 +69,7 @@ namespace QuestAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("TemaId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("TemaPerguntaId")
+                    b.Property<long?>("TemaId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -111,9 +108,7 @@ namespace QuestAPI.Migrations
 
                     b.HasOne("QuestAPI.Entities.Tema", "Tema")
                         .WithMany()
-                        .HasForeignKey("TemaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TemaId");
 
                     b.Navigation("Alternativa");
 
