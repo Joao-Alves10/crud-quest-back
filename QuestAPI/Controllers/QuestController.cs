@@ -15,42 +15,97 @@ namespace QuestAPI.Controllers
             _context = context;
         }
 
-        public class PerguntaResponse {
-            public string DescPergunta { get; set; }
-            public string AlternativaErrada1 { get; set; }
-            public string AlternativaErrada2 { get; set; }
-            public string AlternativaErrada3 { get; set; }
-            public string AlternativaCorreta { get; set; }
-            public string TemaPergunta { get; set; }
+        public class Response
+        {
+            public Tema Tema { get; set; }
+            public Pergunta Pergunta { get; set; }
+            public List<Alternativa> Alternativa { get; set; }
         }
 
-        [HttpPost("perguntas")]
-        public IActionResult PostPerguntas([FromBody]PerguntaResponse perguntaResponse)
+        [HttpGet]
+        public IActionResult GetPerguntas()
         {
             try
             {
-                var descPergunta = new SqlParameter("DescPergunta", perguntaResponse.DescPergunta);
-                var alternativaErrada1 = new SqlParameter("AlternativaErrada1", perguntaResponse.AlternativaErrada1);
-                var alternativaErrada2 = new SqlParameter("AlternativaErrada2", perguntaResponse.AlternativaErrada2);
-                var alternativaErrada3 = new SqlParameter("AlternativaErrada3", perguntaResponse.AlternativaErrada3);
-                var alternativaCorreta = new SqlParameter("AlternativaCorreta", perguntaResponse.AlternativaCorreta);
-
-                PerguntaResponse pergunta = new PerguntaResponse();
-
-                if (perguntaResponse == null)
-                {
-                    throw new Exception("Não foi possível cadastrar a pergunta");
-                }
+                var response = new Response();
 
                 var alternativas = _context.Alternativa
-                                        .FromSqlRaw("INSERT INTO Alternativa VALUES(@AlternativaCorreta, @AlternativaErrada1, @AlternativaErrada2, @AlternativaErrada3 )", alternativaCorreta, alternativaErrada1, alternativaErrada2, alternativaErrada3);
-                                        _context.SaveChanges();
+                                    .Select(x => new {x.AlternativaErrada1, x.AlternativaErrada2, x.AlternativaErrada3, x.AlternativaCorreta })
+                                    .ToList();
 
-                                       
-                var perguntaDesc = _context.Pergunta
-                                   .FromSqlRaw("INSERT INTO Pergunta (DescPergunta) values(@DescPergunta)", descPergunta);
-                                   _context.SaveChanges();
-                return Ok();
+                return Ok(alternativas);
+
+
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+          
+        }
+        [HttpPost("perguntas")]
+        public IActionResult PostPerguntas([FromBody]Pergunta perguntaResponse)
+        {
+            try
+            {
+                Pergunta pergunta = new Pergunta();
+                Alternativa alternativa = new Alternativa();
+                Tema tema = new Tema();
+                
+                if (perguntaResponse == null)
+                {
+                    throw new Exception("Não foi possível cadastrar os dados da pergunta.");
+                }
+
+
+                if (perguntaResponse.Alternativa != null)
+                {
+                    alternativa = new Alternativa
+                    {
+                       AlternativaCorreta = perguntaResponse.Alternativa.AlternativaCorreta,
+                       AlternativaErrada1 = perguntaResponse.Alternativa.AlternativaErrada1,
+                       AlternativaErrada2 = perguntaResponse.Alternativa.AlternativaErrada2,
+                       AlternativaErrada3 = perguntaResponse.Alternativa.AlternativaErrada3
+                    };
+                    _context.Alternativa.Add(alternativa);
+                    _context.SaveChanges();
+                }
+
+                var alternativaId = _context.Alternativa
+                                    .Where(x => x.AlternativaCorreta == perguntaResponse.Alternativa.AlternativaCorreta)
+                                    .Select(x => x.Id)
+                                    .FirstOrDefault();
+
+                if (perguntaResponse.Tema != null)
+                {
+                    tema = new Tema
+                    {
+                        DescTema = perguntaResponse.Tema.DescTema
+                    };
+                    
+                    _context.Tema.Add(tema);
+                    _context.SaveChanges();
+                }
+
+                var temaId = _context.Tema
+                            .Where(x => x.DescTema == perguntaResponse.Tema.DescTema)
+                            .Select(x => x.Id)
+                            .FirstOrDefault();
+
+                if (perguntaResponse != null)
+                {
+                    pergunta = new Pergunta
+                    {
+                        DescPergunta = perguntaResponse.DescPergunta,
+                        TemaId = temaId,
+                        AlternativaId = alternativaId
+                    };
+
+                    _context.Pergunta.Add(pergunta);
+                    _context.SaveChanges();
+                }
+                
+                return Ok(perguntaResponse);
 
             }
             catch (Exception ex)
